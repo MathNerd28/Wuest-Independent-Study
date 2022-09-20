@@ -7,11 +7,14 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.awt.event.WindowListener;
 import java.awt.event.WindowStateListener;
@@ -214,7 +217,7 @@ public class DrawingPanel implements ImageObserver {
             SHUTDOWN_THREAD = new Thread(() -> {
                 while (true) {
                     synchronized (LOCK) {
-                        if (AUTO_SHUTDOWN_ENABLED && CURRENT_INSTANCE_COUNT == 0
+                        if (AUTO_SHUTDOWN_ENABLED && TOTAL_INSTANCE_COUNT == 0
                                 && !mainMethodRunning()) {
                             debugPrint(
                                     "Shutdown thread: conditions met, exiting",
@@ -308,6 +311,7 @@ public class DrawingPanel implements ImageObserver {
         this.window.setSize(this.width, this.height);
         this.window.pack();
         this.window.setVisible(isVisible);
+        this.window.addWindowListener(WindowCloseListener.getInstance());
         this.debugPrint("Framebuffer initialized");
 
         this.timer = new DPTimer(() -> this.panel.repaint(),
@@ -1144,6 +1148,28 @@ public class DrawingPanel implements ImageObserver {
          */
         void stop() {
             this.running = false;
+        }
+    }
+
+    private static class WindowCloseListener extends WindowAdapter {
+        private static final WindowCloseListener INSTANCE = new WindowCloseListener();
+
+        @Override
+        public void windowClosed(WindowEvent e) {
+            synchronized (LOCK) {
+                TOTAL_INSTANCE_COUNT--;
+            }
+        }
+
+        @Override
+        public void windowClosing(WindowEvent e) {
+            synchronized (LOCK) {
+                TOTAL_INSTANCE_COUNT--;
+            }
+        }
+
+        public static WindowCloseListener getInstance() {
+            return INSTANCE;
         }
     }
 }
