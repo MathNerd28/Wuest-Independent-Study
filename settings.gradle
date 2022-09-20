@@ -1,2 +1,3 @@
 rootProject.name = 'Wuest-Independent-Study'
-include('drawing-panel')
+include 'drawing-panel'
+include 'hangman'

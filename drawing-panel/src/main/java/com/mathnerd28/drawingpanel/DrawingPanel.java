@@ -1105,8 +1105,8 @@ public class DrawingPanel implements ImageObserver {
             this.running = true;
             this.iterationCount.set(0);
             this.referenceTime.set(System.nanoTime());
-            long currentTime = referenceTime.get();
-            long targetTime = referenceTime.get();
+            long currentTime = this.referenceTime.get();
+            long targetTime = this.referenceTime.get();
             long sleepTime = 0;
 
             while (this.running) {

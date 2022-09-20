@@ -1,0 +1,23 @@
+plugins {
+    id 'application'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    mainClassName = 'com.mathNerd28.Main'
+}
+
+dependencies {
+    implementation project(':drawing-panel')
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
